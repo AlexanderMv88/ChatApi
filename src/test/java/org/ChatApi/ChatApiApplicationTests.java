@@ -7,22 +7,32 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.hamcrest.core.Is.is;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@AutoConfigureMockMvc
 public class ChatApiApplicationTests {
 
 	@Autowired
 	ChatUserRepository chatUserRepository;
+
+	@Autowired
+	private MockMvc mvc;
 
 	@Test
 	public void test1JpaCreate(){
@@ -43,6 +53,7 @@ public class ChatApiApplicationTests {
 		assertThat(chatUser.getFullName()).isEqualTo("Alexander");
 	}
 
+
 	@Test
 	public void test3JpaChange(){
 		//Update
@@ -58,6 +69,18 @@ public class ChatApiApplicationTests {
 		List<ChatUser> chatUsersForDelete = chatUserRepository.findAll();
 		chatUserRepository.deleteAll(chatUsersForDelete);
 		assertThat(chatUserRepository.findAll().size()==0).isTrue();
+	}
+
+	@Test
+	public void test5Get() throws Exception {
+		chatUserRepository.save(new ChatUser("Дима"));
+
+		mvc.perform(get("/api/findBy?fullName=Дима").contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$[0].fullName", is("Дима")));
+
+
 	}
 
 	@Test
