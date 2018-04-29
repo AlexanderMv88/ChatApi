@@ -50,5 +50,7 @@ public class ChatUser {
         return result;
     }
 
-
+    public ChatUser(String fullName) {
+        this.fullName = fullName;
+    }
 }
