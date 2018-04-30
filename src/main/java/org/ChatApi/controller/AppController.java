@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 
 @RestController
@@ -24,6 +25,19 @@ public class AppController {
     @RequestMapping(value = "/findBy", method=RequestMethod.GET)
     public List<ChatUser> findByFullName(@RequestParam(value="fullName") String fullName){
         return chatUserRepository.findByFullName(fullName);
+    }
+
+    @RequestMapping(value = "/findAll", method=RequestMethod.GET)
+    public List<ChatUser> findAll(){
+        return chatUserRepository.findAll();
+    }
+
+    @RequestMapping(value = "/init", method=RequestMethod.GET)
+    public void init(){
+        Stream.of(new ChatUser("Alexander"), new ChatUser("Nikita"), new ChatUser("Alesya"))
+                .forEach(chatUser -> {
+                    chatUserRepository.save(chatUser);
+                });
     }
 
 
