@@ -78,6 +78,16 @@ public class ChatUserRestTests {
     }
 
     @Test
+    public void test1_1PostUnprocEntity() throws Exception {
+        String jsonObj = json(new ChatUser());
+
+        mvc.perform(post("/api/addChatUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonObj))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     public void test2Post() throws Exception {
         String jsonObj = json(new ChatUser("Дима"));
 
@@ -86,6 +96,8 @@ public class ChatUserRestTests {
                 .content(jsonObj))
                 .andExpect(status().isCreated());
     }
+
+
 
     @Test
     public void test3Get() throws Exception {
@@ -107,6 +119,21 @@ public class ChatUserRestTests {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void test4_1PutUnprocEntity() throws Exception {
+        ChatUser chatUser = getByName("Дима");
+        assertThat(chatUser.getFullName()).isEqualTo("Дима");
+
+        chatUser.setFullName(null);
+        String jsonObj = json(chatUser);
+
+        mvc.perform(put("/api/changeChatUser/"+chatUser.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonObj))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
 
     @Test
     public void test5Put() throws Exception {
@@ -150,11 +177,12 @@ public class ChatUserRestTests {
 
     }
 
+
     private ChatUser getByName(String name) {
 
         MvcResult result = null;
         try {
-            result = mvc.perform(get("/api/findBy?fio=" + name)
+            result = mvc.perform(get("/api/findBy?fullName=" + name)
                     .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
             String content = result.getResponse().getContentAsString();

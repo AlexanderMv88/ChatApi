@@ -9,4 +9,6 @@ import java.util.List;
 public interface ChatUserRepository extends JpaRepository<ChatUser, Long> {
 
     List<ChatUser> findByFullName(String fullName);
+
+
 }
