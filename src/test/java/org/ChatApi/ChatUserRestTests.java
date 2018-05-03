@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -68,6 +69,7 @@ public class ChatUserRestTests {
     }
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test1PostNotFound() throws Exception {
         String jsonObj = json(new ChatUser("Дима"));
 
@@ -78,6 +80,7 @@ public class ChatUserRestTests {
     }
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test1_1PostUnprocEntity() throws Exception {
         String jsonObj = json(new ChatUser());
 
@@ -88,6 +91,7 @@ public class ChatUserRestTests {
     }
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test2Post() throws Exception {
         String jsonObj = json(new ChatUser("Дима"));
 
@@ -100,6 +104,7 @@ public class ChatUserRestTests {
 
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test3Get() throws Exception {
         //chatUserRepository.save(new ChatUser("Дима"));
 
@@ -112,6 +117,7 @@ public class ChatUserRestTests {
     }
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test4PutNotFound() throws Exception {
 
 
@@ -121,6 +127,7 @@ public class ChatUserRestTests {
     }
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test4_1PutUnprocEntity() throws Exception {
         ChatUser chatUser = getByName("Дима");
         assertThat(chatUser.getFullName()).isEqualTo("Дима");
@@ -136,6 +143,7 @@ public class ChatUserRestTests {
 
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test5Put() throws Exception {
         ChatUser chatUser = getByName("Дима");
         assertThat(chatUser.getFullName()).isEqualTo("Дима");
@@ -151,6 +159,7 @@ public class ChatUserRestTests {
 
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test6DeleteNotFound(){
         try {
             mvc.perform(delete("/api/deleteChatUser/333333333")
@@ -163,6 +172,7 @@ public class ChatUserRestTests {
     }
 
     @Test
+    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test7Delete(){
         ChatUser chatUser = getByName("Дмитрий Палыч");
         assertThat(chatUser.getFullName()).isEqualTo("Дмитрий Палыч");
@@ -205,8 +215,5 @@ public class ChatUserRestTests {
         return null;
     }
 
-    @Test
-    public void contextLoads() {
-    }
 
 }
