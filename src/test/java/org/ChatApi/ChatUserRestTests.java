@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.http.MockHttpOutputMessage;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +33,8 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -69,33 +72,33 @@ public class ChatUserRestTests {
     }
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test1PostNotFound() throws Exception {
         String jsonObj = json(new ChatUser("Дима"));
 
         mvc.perform(post("/api/addUser")
+                .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test1_1PostUnprocEntity() throws Exception {
         String jsonObj = json(new ChatUser());
 
         mvc.perform(post("/api/addChatUser")
+                .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test2Post() throws Exception {
         String jsonObj = json(new ChatUser("Дима"));
 
         mvc.perform(post("/api/addChatUser")
+                .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
                 .andExpect(status().isCreated());
@@ -104,11 +107,12 @@ public class ChatUserRestTests {
 
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test3Get() throws Exception {
         //chatUserRepository.save(new ChatUser("Дима"));
 
-        mvc.perform(get("/api/findBy?fullName=Дима").contentType(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/api/findBy?fullName=Дима")
+                .with(httpBasic("Alexander", "12345"))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].fullName", is("Дима")));
@@ -117,17 +121,16 @@ public class ChatUserRestTests {
     }
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test4PutNotFound() throws Exception {
 
 
         ResultActions res = mvc.perform(put("/api/changeUser/")
+                .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test4_1PutUnprocEntity() throws Exception {
         ChatUser chatUser = getByName("Дима");
         assertThat(chatUser.getFullName()).isEqualTo("Дима");
@@ -136,6 +139,7 @@ public class ChatUserRestTests {
         String jsonObj = json(chatUser);
 
         mvc.perform(put("/api/changeChatUser/"+chatUser.getId())
+                .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
                 .andExpect(status().isUnprocessableEntity());
@@ -143,7 +147,6 @@ public class ChatUserRestTests {
 
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test5Put() throws Exception {
         ChatUser chatUser = getByName("Дима");
         assertThat(chatUser.getFullName()).isEqualTo("Дима");
@@ -152,6 +155,7 @@ public class ChatUserRestTests {
         String jsonObj = json(chatUser);
 
         mvc.perform(put("/api/changeChatUser/"+chatUser.getId())
+                .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
                 .andExpect(status().isCreated());
@@ -159,12 +163,39 @@ public class ChatUserRestTests {
 
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
     public void test6DeleteNotFound(){
         try {
             mvc.perform(delete("/api/deleteChatUser/333333333")
+                    .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
+
+            logout();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void logout() {
+        SecurityContextHolder.clearContext();
+    }
+
+
+    @Test
+    public void test7SecurityFail() throws Exception {
+
+
+
+        ChatUser chatUser = getByName("Дмитрий Палыч");
+        assertThat(chatUser.getFullName()).isEqualTo("Дмитрий Палыч");
+
+        try {
+            mvc.perform(delete("/api/deleteChatUser/"+chatUser.getId())
+                    .with(httpBasic("Alexander", "123"))
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isUnauthorized());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,13 +203,13 @@ public class ChatUserRestTests {
     }
 
     @Test
-    @WithMockUser(username = "Alexander", password = "12345", roles = {"USER"})
-    public void test7Delete(){
+    public void test8Delete(){
         ChatUser chatUser = getByName("Дмитрий Палыч");
         assertThat(chatUser.getFullName()).isEqualTo("Дмитрий Палыч");
 
         try {
             mvc.perform(delete("/api/deleteChatUser/"+chatUser.getId())
+                    .with(httpBasic("Alexander", "12345"))
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
         } catch (Exception e) {
@@ -193,6 +224,7 @@ public class ChatUserRestTests {
         MvcResult result = null;
         try {
             result = mvc.perform(get("/api/findBy?fullName=" + name)
+                    .with(httpBasic("Alexander", "12345"))
                     .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
             String content = result.getResponse().getContentAsString();
