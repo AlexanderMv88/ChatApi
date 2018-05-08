@@ -1,4 +1,4 @@
-package org.ChatApi;
+package org.EmployeeApi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

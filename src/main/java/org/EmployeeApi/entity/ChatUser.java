@@ -1,4 +1,4 @@
-package org.ChatApi.entity;
+package org.EmployeeApi.entity;
 
 
 import javax.persistence.Entity;

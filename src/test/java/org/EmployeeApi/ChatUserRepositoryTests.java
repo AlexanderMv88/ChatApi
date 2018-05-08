@@ -1,7 +1,7 @@
-package org.ChatApi;
+package org.EmployeeApi;
 
-import org.ChatApi.entity.ChatUser;
-import org.ChatApi.repository.ChatUserRepository;
+import org.EmployeeApi.entity.ChatUser;
+import org.EmployeeApi.repository.ChatUserRepository;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;

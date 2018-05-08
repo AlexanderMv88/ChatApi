@@ -1,10 +1,9 @@
-package org.ChatApi.controller;
+package org.EmployeeApi.controller;
 
 
-import org.ChatApi.entity.ChatUser;
-import org.ChatApi.repository.ChatUserRepository;
+import org.EmployeeApi.entity.ChatUser;
+import org.EmployeeApi.repository.ChatUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

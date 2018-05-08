@@ -1,9 +1,8 @@
-package org.ChatApi.repository;
+package org.EmployeeApi.repository;
 
-import org.ChatApi.entity.ChatUser;
+import org.EmployeeApi.entity.ChatUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.nio.CharBuffer;
 import java.util.List;
 
 public interface ChatUserRepository extends JpaRepository<ChatUser, Long> {
