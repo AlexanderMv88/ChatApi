@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class ChatUser {
+public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -29,7 +29,7 @@ public class ChatUser {
         this.fullName = fullName;
     }
 
-    public ChatUser() {
+    public Employee() {
     }
 
     @Override
@@ -37,10 +37,10 @@ public class ChatUser {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ChatUser chatUser = (ChatUser) o;
+        Employee employee = (Employee) o;
 
-        if (id != chatUser.id) return false;
-        return fullName != null ? fullName.equals(chatUser.fullName) : chatUser.fullName == null;
+        if (id != employee.id) return false;
+        return fullName != null ? fullName.equals(employee.fullName) : employee.fullName == null;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ChatUser {
         return result;
     }
 
-    public ChatUser(String fullName) {
+    public Employee(String fullName) {
         this.fullName = fullName;
     }
 }

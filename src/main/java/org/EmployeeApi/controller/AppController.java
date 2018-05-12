@@ -1,8 +1,8 @@
 package org.EmployeeApi.controller;
 
 
-import org.EmployeeApi.entity.ChatUser;
-import org.EmployeeApi.repository.ChatUserRepository;
+import org.EmployeeApi.entity.Employee;
+import org.EmployeeApi.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,50 +19,50 @@ import java.util.stream.Stream;
 public class AppController {
 
     @Autowired
-    ChatUserRepository chatUserRepository;
+    EmployeeRepository employeeRepository;
 
     @RequestMapping(value = "/findBy", method=RequestMethod.GET)
-    public List<ChatUser> findByFullName(@RequestParam(value="fullName") String fullName){
-        return chatUserRepository.findByFullName(fullName);
+    public List<Employee> findByFullName(@RequestParam(value="fullName") String fullName){
+        return employeeRepository.findByFullName(fullName);
     }
 
     @RequestMapping(value = "/findAll", method=RequestMethod.GET)
-    public List<ChatUser> findAll(){
-        return chatUserRepository.findAll();
+    public List<Employee> findAll(){
+        return employeeRepository.findAll();
     }
 
     @RequestMapping(value = "/init", method=RequestMethod.GET)
     public void init(){
-        Stream.of(new ChatUser("Alexander"), new ChatUser("Nikita"), new ChatUser("Alesya"))
+        Stream.of(new Employee("Alexander"), new Employee("Nikita"), new Employee("Alesya"))
                 .forEach(chatUser -> {
-                    chatUserRepository.save(chatUser);
+                    employeeRepository.save(chatUser);
                 });
     }
 
 
     @RequestMapping(value = "/addChatUser", method = RequestMethod.POST)
-    public ResponseEntity<?> createChatUser(@RequestBody ChatUser chatUser){
-        if (chatUser.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
+    public ResponseEntity<?> createChatUser(@RequestBody Employee employee){
+        if (employee.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
 
-        ChatUser newChatUser = chatUserRepository.save(chatUser);
+        Employee newEmployee = employeeRepository.save(employee);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(newChatUser)
+                .buildAndExpand(newEmployee)
                 .toUri();
 
         return ResponseEntity.created(location).build();
     }
 
     @RequestMapping(value = "/changeChatUser/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> changeChatUser(@PathVariable long id, @RequestBody ChatUser chatUser){
-        if (chatUser.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
+    public ResponseEntity<?> changeChatUser(@PathVariable long id, @RequestBody Employee employee){
+        if (employee.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
 
-        Optional<ChatUser> chatUserForChange = chatUserRepository.findById(id);
+        Optional<Employee> chatUserForChange = employeeRepository.findById(id);
         if (chatUserForChange.isPresent()){
-            chatUserForChange.get().setFullName(chatUser.getFullName());
-            chatUserRepository.save(chatUserForChange.get());
+            chatUserForChange.get().setFullName(employee.getFullName());
+            employeeRepository.save(chatUserForChange.get());
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .buildAndExpand(chatUserForChange.get().getId()).toUri();
@@ -77,9 +77,9 @@ public class AppController {
 
     @RequestMapping(value = "/deleteChatUser/{id}", method=RequestMethod.DELETE)
     public ResponseEntity<?> deleteChatUser(@PathVariable long id){
-        Optional<ChatUser> chatUserForRemove = chatUserRepository.findById(id);
+        Optional<Employee> chatUserForRemove = employeeRepository.findById(id);
         if (chatUserForRemove.isPresent()){
-            chatUserRepository.delete(chatUserForRemove.get());
+            employeeRepository.delete(chatUserForRemove.get());
             return ResponseEntity.ok().build();
         }else{
             return ResponseEntity.notFound().build();

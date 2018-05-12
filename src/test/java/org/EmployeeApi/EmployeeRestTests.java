@@ -2,7 +2,7 @@ package org.EmployeeApi;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.EmployeeApi.entity.ChatUser;
+import org.EmployeeApi.entity.Employee;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @AutoConfigureMockMvc
-public class ChatUserRestTests {
+public class EmployeeRestTests {
 
 
     @Autowired
@@ -69,7 +69,7 @@ public class ChatUserRestTests {
 
     @Test
     public void test1PostNotFound() throws Exception {
-        String jsonObj = json(new ChatUser("Дима"));
+        String jsonObj = json(new Employee("Дима"));
 
         mvc.perform(post("/api/addUser")
                 .with(httpBasic("Alexander", "12345"))
@@ -80,7 +80,7 @@ public class ChatUserRestTests {
 
     @Test
     public void test1_1PostUnprocEntity() throws Exception {
-        String jsonObj = json(new ChatUser());
+        String jsonObj = json(new Employee());
 
         mvc.perform(post("/api/addChatUser")
                 .with(httpBasic("Alexander", "12345"))
@@ -91,7 +91,7 @@ public class ChatUserRestTests {
 
     @Test
     public void test2Post() throws Exception {
-        String jsonObj = json(new ChatUser("Дима"));
+        String jsonObj = json(new Employee("Дима"));
 
         mvc.perform(post("/api/addChatUser")
                 .with(httpBasic("Alexander", "12345"))
@@ -104,7 +104,7 @@ public class ChatUserRestTests {
 
     @Test
     public void test3Get() throws Exception {
-        //chatUserRepository.save(new ChatUser("Дима"));
+        //employeeRepository.save(new Employee("Дима"));
 
         mvc.perform(get("/api/findBy?fullName=Дима")
                 .with(httpBasic("Alexander", "12345"))
@@ -128,13 +128,13 @@ public class ChatUserRestTests {
 
     @Test
     public void test4_1PutUnprocEntity() throws Exception {
-        ChatUser chatUser = getByName("Дима");
-        assertThat(chatUser.getFullName()).isEqualTo("Дима");
+        Employee employee = getByName("Дима");
+        assertThat(employee.getFullName()).isEqualTo("Дима");
 
-        chatUser.setFullName(null);
-        String jsonObj = json(chatUser);
+        employee.setFullName(null);
+        String jsonObj = json(employee);
 
-        mvc.perform(put("/api/changeChatUser/"+chatUser.getId())
+        mvc.perform(put("/api/changeChatUser/"+ employee.getId())
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
@@ -144,13 +144,13 @@ public class ChatUserRestTests {
 
     @Test
     public void test5Put() throws Exception {
-        ChatUser chatUser = getByName("Дима");
-        assertThat(chatUser.getFullName()).isEqualTo("Дима");
+        Employee employee = getByName("Дима");
+        assertThat(employee.getFullName()).isEqualTo("Дима");
 
-        chatUser.setFullName("Дмитрий Палыч");
-        String jsonObj = json(chatUser);
+        employee.setFullName("Дмитрий Палыч");
+        String jsonObj = json(employee);
 
-        mvc.perform(put("/api/changeChatUser/"+chatUser.getId())
+        mvc.perform(put("/api/changeChatUser/"+ employee.getId())
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
@@ -184,11 +184,11 @@ public class ChatUserRestTests {
 
 
 
-        ChatUser chatUser = getByName("Дмитрий Палыч");
-        assertThat(chatUser.getFullName()).isEqualTo("Дмитрий Палыч");
+        Employee employee = getByName("Дмитрий Палыч");
+        assertThat(employee.getFullName()).isEqualTo("Дмитрий Палыч");
 
         try {
-            mvc.perform(delete("/api/deleteChatUser/"+chatUser.getId())
+            mvc.perform(delete("/api/deleteChatUser/"+ employee.getId())
                     .with(httpBasic("Alexander", "123"))
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isUnauthorized());
@@ -200,11 +200,11 @@ public class ChatUserRestTests {
 
     @Test
     public void test8Delete(){
-        ChatUser chatUser = getByName("Дмитрий Палыч");
-        assertThat(chatUser.getFullName()).isEqualTo("Дмитрий Палыч");
+        Employee employee = getByName("Дмитрий Палыч");
+        assertThat(employee.getFullName()).isEqualTo("Дмитрий Палыч");
 
         try {
-            mvc.perform(delete("/api/deleteChatUser/"+chatUser.getId())
+            mvc.perform(delete("/api/deleteChatUser/"+ employee.getId())
                     .with(httpBasic("Alexander", "12345"))
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
@@ -215,7 +215,7 @@ public class ChatUserRestTests {
     }
 
 
-    private ChatUser getByName(String name) {
+    private Employee getByName(String name) {
 
         MvcResult result = null;
         try {
@@ -226,7 +226,7 @@ public class ChatUserRestTests {
             String content = result.getResponse().getContentAsString();
             content = content.replace("[", "").replace("]", "");
             ObjectMapper mapper = new ObjectMapper();
-            TypeReference<ChatUser> typeReference = new TypeReference<ChatUser>() {
+            TypeReference<Employee> typeReference = new TypeReference<Employee>() {
 
             };
             InputStream inputStream = new ByteArrayInputStream(content.getBytes());
