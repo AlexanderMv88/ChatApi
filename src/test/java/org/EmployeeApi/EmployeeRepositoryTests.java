@@ -41,7 +41,6 @@ public class EmployeeRepositoryTests {
         assertThat(employee.getFullName()).isEqualTo("Alexander");
     }
 
-
     @Test
     public void test3JpaChange() {
         //Update

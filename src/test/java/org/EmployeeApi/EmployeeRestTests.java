@@ -41,16 +41,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class EmployeeRestTests {
 
-
     @Autowired
     private MockMvc mvc;
-
-
     private HttpMessageConverter mappingJackson2HttpMessageConverter;
 
     @Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
-
         this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream()
                 .filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter)
                 .findAny()
@@ -70,7 +66,6 @@ public class EmployeeRestTests {
     @Test
     public void test1PostNotFound() throws Exception {
         String jsonObj = json(new Employee("Дима"));
-
         mvc.perform(post("/api/addUser")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +76,6 @@ public class EmployeeRestTests {
     @Test
     public void test1_1PostUnprocEntity() throws Exception {
         String jsonObj = json(new Employee());
-
         mvc.perform(post("/api/addChatUser")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -92,7 +86,6 @@ public class EmployeeRestTests {
     @Test
     public void test2Post() throws Exception {
         String jsonObj = json(new Employee("Дима"));
-
         mvc.perform(post("/api/addChatUser")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -105,7 +98,6 @@ public class EmployeeRestTests {
     @Test
     public void test3Get() throws Exception {
         //employeeRepository.save(new Employee("Дима"));
-
         mvc.perform(get("/api/findBy?fullName=Дима")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -118,8 +110,6 @@ public class EmployeeRestTests {
 
     @Test
     public void test4PutNotFound() throws Exception {
-
-
         ResultActions res = mvc.perform(put("/api/changeUser/")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -130,10 +120,8 @@ public class EmployeeRestTests {
     public void test4_1PutUnprocEntity() throws Exception {
         Employee employee = getByName("Дима");
         assertThat(employee.getFullName()).isEqualTo("Дима");
-
         employee.setFullName(null);
         String jsonObj = json(employee);
-
         mvc.perform(put("/api/changeChatUser/"+ employee.getId())
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -178,15 +166,10 @@ public class EmployeeRestTests {
         SecurityContextHolder.clearContext();
     }
 
-
     @Test
     public void test7SecurityFail() throws Exception {
-
-
-
         Employee employee = getByName("Дмитрий Палыч");
         assertThat(employee.getFullName()).isEqualTo("Дмитрий Палыч");
-
         try {
             mvc.perform(delete("/api/deleteChatUser/"+ employee.getId())
                     .with(httpBasic("Alexander", "123"))
@@ -195,14 +178,12 @@ public class EmployeeRestTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Test
     public void test8Delete(){
         Employee employee = getByName("Дмитрий Палыч");
         assertThat(employee.getFullName()).isEqualTo("Дмитрий Палыч");
-
         try {
             mvc.perform(delete("/api/deleteChatUser/"+ employee.getId())
                     .with(httpBasic("Alexander", "12345"))
@@ -211,12 +192,9 @@ public class EmployeeRestTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-
     private Employee getByName(String name) {
-
         MvcResult result = null;
         try {
             result = mvc.perform(get("/api/findBy?fullName=" + name)
@@ -238,10 +216,6 @@ public class EmployeeRestTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         return null;
     }
-
-
 }
