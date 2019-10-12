@@ -110,11 +110,11 @@ public class EmployeeRestTests {
     }
 
     @Test
-    public void test4PutNotFound() throws Exception {
-        ResultActions res = mvc.perform(put("/api/employeeeeeee/999")
+    public void test4PutBadRequest() throws Exception {
+        ResultActions res = mvc.perform(put("/api/employee/999")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -129,6 +129,20 @@ public class EmployeeRestTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void test4_2PutNotFoundEntity() throws Exception {
+        System.out.println("test4_1PutUnprocEntity");
+        Employee employee = getByName("Дима");
+        assertThat(employee.getFullName()).isEqualTo("Дима");
+        employee.setFullName("Димон!");
+        String jsonObj = json(employee);
+        mvc.perform(put("/api/employee/99999")
+                .with(httpBasic("Alexander", "12345"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonObj))
+                .andExpect(status().isNotFound());
     }
 
 
