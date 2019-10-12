@@ -65,8 +65,9 @@ public class EmployeeRestTests {
 
     @Test
     public void test1PostNotFound() throws Exception {
+        System.out.println("PostNotFound test");
         String jsonObj = json(new Employee("Дима"));
-        mvc.perform(post("/api/addUser")
+        mvc.perform(post("/api/employeeeeeee")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
@@ -76,7 +77,7 @@ public class EmployeeRestTests {
     @Test
     public void test1_1PostUnprocEntity() throws Exception {
         String jsonObj = json(new Employee());
-        mvc.perform(post("/api/addChatUser")
+        mvc.perform(post("/api/employee")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
@@ -86,7 +87,7 @@ public class EmployeeRestTests {
     @Test
     public void test2Post() throws Exception {
         String jsonObj = json(new Employee("Дима"));
-        mvc.perform(post("/api/addChatUser")
+        mvc.perform(post("/api/employee")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
@@ -98,7 +99,7 @@ public class EmployeeRestTests {
     @Test
     public void test3Get() throws Exception {
         //employeeRepository.save(new Employee("Дима"));
-        mvc.perform(get("/api/findBy?fullName=Дима")
+        mvc.perform(get("/api/employee?fullName=Дима")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -110,7 +111,7 @@ public class EmployeeRestTests {
 
     @Test
     public void test4PutNotFound() throws Exception {
-        ResultActions res = mvc.perform(put("/api/changeUser/")
+        ResultActions res = mvc.perform(put("/api/employeeeeeee/999")
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -118,11 +119,12 @@ public class EmployeeRestTests {
 
     @Test
     public void test4_1PutUnprocEntity() throws Exception {
+        System.out.println("test4_1PutUnprocEntity");
         Employee employee = getByName("Дима");
         assertThat(employee.getFullName()).isEqualTo("Дима");
         employee.setFullName(null);
         String jsonObj = json(employee);
-        mvc.perform(put("/api/changeChatUser/"+ employee.getId())
+        mvc.perform(put("/api/employee/"+ employee.getId())
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
@@ -138,7 +140,7 @@ public class EmployeeRestTests {
         employee.setFullName("Дмитрий Палыч");
         String jsonObj = json(employee);
 
-        mvc.perform(put("/api/changeChatUser/"+ employee.getId())
+        mvc.perform(put("/api/employee/"+ employee.getId())
                 .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonObj))
@@ -149,7 +151,7 @@ public class EmployeeRestTests {
     @Test
     public void test6DeleteNotFound(){
         try {
-            mvc.perform(delete("/api/deleteChatUser/333333333")
+            mvc.perform(delete("/api/employeeeeee/333333333")
                     .with(httpBasic("Alexander", "12345"))
                 .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
@@ -171,7 +173,7 @@ public class EmployeeRestTests {
         Employee employee = getByName("Дмитрий Палыч");
         assertThat(employee.getFullName()).isEqualTo("Дмитрий Палыч");
         try {
-            mvc.perform(delete("/api/deleteChatUser/"+ employee.getId())
+            mvc.perform(delete("/api/employee/"+ employee.getId())
                     .with(httpBasic("Alexander", "123"))
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isUnauthorized());
@@ -185,7 +187,7 @@ public class EmployeeRestTests {
         Employee employee = getByName("Дмитрий Палыч");
         assertThat(employee.getFullName()).isEqualTo("Дмитрий Палыч");
         try {
-            mvc.perform(delete("/api/deleteChatUser/"+ employee.getId())
+            mvc.perform(delete("/api/employee/"+ employee.getId())
                     .with(httpBasic("Alexander", "12345"))
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk());
@@ -197,7 +199,7 @@ public class EmployeeRestTests {
     private Employee getByName(String name) {
         MvcResult result = null;
         try {
-            result = mvc.perform(get("/api/findBy?fullName=" + name)
+            result = mvc.perform(get("/api/employee?fullName=" + name)
                     .with(httpBasic("Alexander", "12345"))
                     .contentType(MediaType.APPLICATION_JSON)).andReturn();
 

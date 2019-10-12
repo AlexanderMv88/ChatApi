@@ -15,14 +15,14 @@ import java.util.stream.Stream;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/employee")
 public class AppController {
 
     @Autowired
     EmployeeRepository employeeRepository;
 
-    @GetMapping(value = "/findBy")
-    public List<Employee> findBy(@RequestParam(value="fullName") String fullName){
+    @GetMapping
+    public List<Employee> get(@RequestParam(value="fullName") String fullName){
         return employeeRepository.findByFullName(fullName);
     }
 
@@ -40,8 +40,8 @@ public class AppController {
     }
 
 
-    @PostMapping(value = "/addChatUser")
-    public ResponseEntity<?> createChatUser(@RequestBody Employee employee){
+    @PostMapping
+    public ResponseEntity<?> post(@RequestBody Employee employee){
         if (employee.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
 
         Employee newEmployee = employeeRepository.save(employee);
@@ -55,8 +55,8 @@ public class AppController {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping(value = "/changeChatUser/{id}")
-    public ResponseEntity<?> changeChatUser(@PathVariable long id, @RequestBody Employee employee){
+    @PutMapping("/{id}")
+    public ResponseEntity<?> put(@PathVariable long id, @RequestBody Employee employee){
         if (employee.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
 
         Optional<Employee> chatUserForChange = employeeRepository.findById(id);
@@ -75,8 +75,8 @@ public class AppController {
 
     }
 
-    @DeleteMapping(value = "/deleteChatUser/{id}")
-    public ResponseEntity<?> deleteChatUser(@PathVariable long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable long id){
         Optional<Employee> chatUserForRemove = employeeRepository.findById(id);
         if (chatUserForRemove.isPresent()){
             employeeRepository.delete(chatUserForRemove.get());
