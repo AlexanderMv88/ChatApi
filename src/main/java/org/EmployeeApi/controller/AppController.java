@@ -21,17 +21,17 @@ public class AppController {
     @Autowired
     EmployeeRepository employeeRepository;
 
-    @RequestMapping(value = "/findBy", method=RequestMethod.GET)
-    public List<Employee> findByFullName(@RequestParam(value="fullName") String fullName){
+    @GetMapping(value = "/findBy")
+    public List<Employee> findBy(@RequestParam(value="fullName") String fullName){
         return employeeRepository.findByFullName(fullName);
     }
 
-    @RequestMapping(value = "/findAll", method=RequestMethod.GET)
+    @GetMapping(value = "/findAll")
     public List<Employee> findAll(){
         return employeeRepository.findAll();
     }
 
-    @RequestMapping(value = "/init", method=RequestMethod.GET)
+    @GetMapping(value = "/init")
     public void init(){
         Stream.of(new Employee("Alexander"), new Employee("Nikita"), new Employee("Alesya"))
                 .forEach(chatUser -> {
@@ -40,7 +40,7 @@ public class AppController {
     }
 
 
-    @RequestMapping(value = "/addChatUser", method = RequestMethod.POST)
+    @PostMapping(value = "/addChatUser")
     public ResponseEntity<?> createChatUser(@RequestBody Employee employee){
         if (employee.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
 
@@ -55,7 +55,7 @@ public class AppController {
         return ResponseEntity.created(location).build();
     }
 
-    @RequestMapping(value = "/changeChatUser/{id}", method = RequestMethod.PUT)
+    @PutMapping(value = "/changeChatUser/{id}")
     public ResponseEntity<?> changeChatUser(@PathVariable long id, @RequestBody Employee employee){
         if (employee.getFullName() == null) return ResponseEntity.unprocessableEntity().build();
 
@@ -75,7 +75,7 @@ public class AppController {
 
     }
 
-    @RequestMapping(value = "/deleteChatUser/{id}", method=RequestMethod.DELETE)
+    @DeleteMapping(value = "/deleteChatUser/{id}")
     public ResponseEntity<?> deleteChatUser(@PathVariable long id){
         Optional<Employee> chatUserForRemove = employeeRepository.findById(id);
         if (chatUserForRemove.isPresent()){
