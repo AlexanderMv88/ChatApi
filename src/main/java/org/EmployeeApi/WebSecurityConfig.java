@@ -28,13 +28,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
  
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().exceptionHandling();
-
-        // All requests send to the Web Server request must be authenticated
-        http.authorizeRequests().anyRequest().authenticated().and().logout();
-
-        // Use AuthenticationEntryPoint to authenticate user/password
-        http.httpBasic().authenticationEntryPoint(authEntryPoint);
+        //TODO: .sessionManagement().sessionFixation().newSession().and()
+        http
+                // Use AuthenticationEntryPoint to authenticate user/password
+                .httpBasic().authenticationEntryPoint(authEntryPoint).and()
+                 .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("/users/admin/**").hasAnyRole("ADMIN")
+                .antMatchers("/users/**").hasAnyRole("USER", "ADMIN")
+                // All requests send to the Web Server request must be authenticated
+                .anyRequest().authenticated().and().
+                logout().logoutSuccessUrl("/users").invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
 
     }
     @Bean
@@ -50,19 +56,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
  
         String encrytedPassword = this.passwordEncoder().encode(password);
         System.out.println("Encoded password of 12345=" + encrytedPassword);
-         
-         
-        InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> //
+
+        InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder>
         mngConfig = auth.inMemoryAuthentication();
  
         // Defines 2 users, stored in memory.
         // ** Spring BOOT >= 2.x (Spring Security 5.x)
         // Spring auto add ROLE_
-        UserDetails u1 = User.withUsername("Alexander").password(encrytedPassword).roles("USER").build();
-        UserDetails u2 = User.withUsername("Moderator").password(encrytedPassword).roles("USER").build();
+        UserDetails u1 = User.withUsername("Alexander").password(encrytedPassword).roles("ADMIN").build();
+        UserDetails u2 = User.withUsername("User").password(encrytedPassword).roles("USER").build();
  
-        mngConfig.withUser(u1);
-        mngConfig.withUser(u2);
+        mngConfig.withUser(u1).withUser(u2);
  
         // If Spring BOOT < 2.x (Spring Security 4.x)):
         // Spring auto add ROLE_
