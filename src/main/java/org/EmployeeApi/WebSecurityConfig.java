@@ -32,7 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // Use AuthenticationEntryPoint to authenticate user/password
                 .httpBasic().authenticationEntryPoint(authEntryPoint).and()
-                 .csrf().disable()
+                .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/**").hasAnyRole("ADMIN", "USER")
                 .antMatchers("/users/admin/**").hasAnyRole("ADMIN")
